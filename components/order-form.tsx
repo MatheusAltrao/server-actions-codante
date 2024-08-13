@@ -1,21 +1,49 @@
+import { createOrderAction } from '@/actions/create-order-action';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui/select';
+import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
+import toast from 'react-hot-toast';
 import { Button } from './ui/button';
 import { DatePicker } from './ui/date-picker';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import Loading from './ui/loading';
 
-export default function OrderForm() {
+interface OrderFormProps {
+  setOpen: (v: boolean) => void;
+}
+
+export default function OrderForm({ setOpen }: OrderFormProps) {
+  const [orderDate, setOrderDate] = useState<Date>();
+  const [state, formAction] = useFormState(createOrderAction, null);
+
+  useEffect(() => {
+    if (state?.error) {
+      toast.error(state.message);
+      setOpen(true);
+    }
+    if (!state?.error && state?.message) {
+      toast.success(state.message);
+      setOpen(false);
+    }
+  }, [state, state?.error, state?.message]);
+
   return (
-    <form onSubmit={(e) => {e.preventDefault()}} className="grid items-start gap-4">
+    <form
+      action={formAction}
+      className="grid items-start gap-4"
+    >
       <div className="grid gap-2">
         <Label htmlFor="customer_name">Nome do Cliente</Label>
         <Input
+          required
           name="customer_name"
           id="customer_name"
           placeholder="José Carlos da Silva"
@@ -24,6 +52,7 @@ export default function OrderForm() {
       <div className="grid gap-2">
         <Label htmlFor="customer_email">Email do Cliente</Label>
         <Input
+          required
           name="customer_email"
           type="email"
           id="customer_email"
@@ -44,19 +73,41 @@ export default function OrderForm() {
       </div>
       <div className="grid gap-2">
         <Label htmlFor="username">Data do Pedido</Label>
-        <DatePicker onSelect={() => {}} />
+        <DatePicker
+          onSelect={(value) => {
+            setOrderDate(value);
+          }}
+        />
+        <input
+          required
+          type="hidden"
+          name="order_date"
+          value={orderDate && format(orderDate, 'yyyy-MM-dd')}
+        />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="amount_in_cents">Valor do Pedido</Label>
         <Input
+          required
           name="amount_in_cents"
           id="amount_in_cents"
           placeholder="100,00"
         />
-        <Button type="submit">
-          Cadastrar
-        </Button>
+        <SubmitButton />
       </div>
     </form>
   );
 }
+
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      disabled={pending}
+      type="submit"
+    >
+      {pending ? <Loading /> : 'Cadastrar'}
+    </Button>
+  );
+};

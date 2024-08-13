@@ -1,7 +1,6 @@
 'use client';
 
 /* eslint-disable react/no-unescaped-entities */
-import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -21,8 +20,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { useMediaQuery } from 'usehooks-ts';
 import { PlusCircle } from 'lucide-react';
+import * as React from 'react';
+import { useMediaQuery } from 'usehooks-ts';
 import OrderForm from './order-form';
 
 export function DrawerDialog() {
@@ -31,9 +31,15 @@ export function DrawerDialog() {
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+      >
         <DialogTrigger asChild>
-          <Button variant="default" className="flex gap-2">
+          <Button
+            variant="default"
+            className="flex gap-2"
+          >
             <PlusCircle className="h-5 w-5" />
             Cadastrar Pedido
           </Button>
@@ -45,16 +51,22 @@ export function DrawerDialog() {
               Cadastre um pedido. Clique em salvar quando terminar.
             </DialogDescription>
           </DialogHeader>
-          <OrderForm />
+          <OrderForm setOpen={setOpen} />
         </DialogContent>
       </Dialog>
     );
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DrawerTrigger asChild>
-        <Button variant="default" className="flex gap-2">
+        <Button
+          variant="default"
+          className="flex gap-2"
+        >
           <PlusCircle className="h-5 w-5" />
           Cadastrar Pedido
         </Button>
@@ -66,8 +78,8 @@ export function DrawerDialog() {
             Cadastre um pedido. Clique em salvar quando terminar.
           </DrawerDescription>
         </DrawerHeader>
-        <div className='p-4'>
-          <OrderForm />
+        <div className="p-4">
+          <OrderForm setOpen={setOpen} />
         </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>

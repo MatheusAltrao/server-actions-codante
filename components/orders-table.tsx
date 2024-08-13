@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { Order } from '@/lib/types';
-import { ChevronDown, ChevronsUpDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import DeleteButton from './delete-button';
 import { Badge } from './ui/badge';
@@ -84,18 +84,19 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
               </div>
             </TableCell>
             <TableCell>
-              <Badge className={`text-xs`} variant="outline">
+              <Badge
+                className={`text-xs`}
+                variant="outline"
+              >
                 {order.status === 'pending' ? 'Pendente' : 'Completo'}
               </Badge>
             </TableCell>
-            <TableCell className="hidden md:table-cell">
-              {order.order_date.toString()}
-            </TableCell>
+            <TableCell className="hidden md:table-cell">{order.order_date.toString()}</TableCell>
             <TableCell className="text-right">
               {formatter.format(order.amount_in_cents / 100)}
             </TableCell>
             <TableCell className="text-right">
-              <DeleteButton />
+              <DeleteButton order={order} />
             </TableCell>
           </TableRow>
         ))}
